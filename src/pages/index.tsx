@@ -1,8 +1,17 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useRef } from 'react'
 import { trpc } from '../utils/trpc'
 
 const Home: NextPage = () => {
+  const inputRef = useRef(null)
+  function handleAdd(e) {
+    if (e.key === 'Enter') {
+      console.log('add : ', e.target.value)
+      inputRef.current.value = ''
+    }
+  }
+
   return (
     <>
       <Head>
@@ -17,14 +26,18 @@ const Home: NextPage = () => {
         </h1>
 
         <div className="pb-10 text-xl">
-          <input type="checkbox" name="my" id="" />
-          items
+          <input type="checkbox" name="my" id="label1" />
+          &nbsp;
+          <label htmlFor="label1">Item</label>
         </div>
-        <div className="rounded border-2 p-2">
+
+        <div className="p-2">
           <input
+            ref={inputRef}
             type="text"
             placeholder="Add todo"
             className="p-2 border-2 rounded"
+            onKeyDown={handleAdd}
           />
         </div>
       </main>
