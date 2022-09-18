@@ -4,11 +4,20 @@ import { useRef } from 'react'
 import { trpc } from '../utils/trpc'
 
 const Home: NextPage = () => {
-  const inputRef = useRef(null)
-  function handleAdd(e) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const { mutate, isLoading } = trpc.useMutation('todo.createTodo', {
+    onSuccess: (data) => {
+      console.log('success data: ', data)
+      if (!inputRef.current) return
+      inputRef.current.value = ''
+    },
+  })
+
+  function handleAdd(e: { target: HTMLInputElement; key: string }) {
     if (e.key === 'Enter') {
       console.log('add : ', e.target.value)
-      inputRef.current.value = ''
+      mutate({ text: e.target.value })
     }
   }
 
@@ -25,13 +34,12 @@ const Home: NextPage = () => {
           Todo List
         </h1>
 
-        <div className="pb-10 text-xl">
-          <input type="checkbox" name="my" id="label1" />
-          &nbsp;
-          <label htmlFor="label1">Item</label>
-        </div>
-
-        <div className="p-2">
+        <div className="p-3 border rounded">
+          <div className="pb-5 text-xl">
+            <input type="checkbox" name="my" id="label1" />
+            &nbsp;
+            <label htmlFor="label1">Item</label>
+          </div>
           <input
             ref={inputRef}
             type="text"

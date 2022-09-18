@@ -20,12 +20,20 @@ export const todoRouter = createRouter()
     },
   })
   .mutation('createTodo', {
-    // validate input with Zod
-    input: z.object({ name: z.string().min(3) }),
+    input: z.object({ text: z.string().min(3) }),
     async resolve(req) {
-      // use your ORM of choice
-      return await prisma.todo.create({
-        data: req.input,
+      return await req.ctx.prisma.todo.create({
+        data: { text: req.input.text, checked: false },
+      })
+    },
+  })
+  .mutation('create', {
+    input: z.object({ question: z.string().min(3) }),
+    async resolve({ input, ctx }) {
+      return await ctx.prisma.todo.create({
+        data: {
+          text: input.question,
+        },
       })
     },
   })
