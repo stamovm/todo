@@ -5,10 +5,13 @@ import { trpc } from '../utils/trpc'
 
 const Home: NextPage = () => {
   const inputRef = useRef<HTMLInputElement>(null)
+  const { data } = trpc.useQuery(['todo.getAll'])
+  const client = trpc.useContext()
 
   const { mutate, isLoading } = trpc.useMutation('todo.createTodo', {
     onSuccess: (data) => {
       console.log('success data: ', data)
+      client.invalidateQueries(['todo.getAll'])
       if (!inputRef.current) return
       inputRef.current.value = ''
     },
@@ -36,9 +39,20 @@ const Home: NextPage = () => {
 
         <div className="p-3 border rounded">
           <div className="pb-5 text-xl">
-            <input type="checkbox" name="my" id="label1" />
-            &nbsp;
-            <label htmlFor="label1">Item</label>
+            {data ? (
+              data.map((todo) => (
+                <div
+                  key={todo.id}
+                  className="  text-xl text-teal-500 hover:text-teal-700 duration-300"
+                >
+                  <input type="checkbox" name="my" id={todo.id} />
+
+                  <label htmlFor={todo.id}> {todo.text}</label>
+                </div>
+              ))
+            ) : (
+              <p className="animate-bounce">Loading..</p>
+            )}
           </div>
           <input
             ref={inputRef}
@@ -46,6 +60,7 @@ const Home: NextPage = () => {
             placeholder="Add todo"
             className="p-2 border-2 rounded"
             onKeyDown={handleAdd}
+            disabled={isLoading}
           />
         </div>
       </main>
