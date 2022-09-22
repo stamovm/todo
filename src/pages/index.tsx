@@ -8,9 +8,10 @@ const Home: NextPage = () => {
   const { data } = trpc.useQuery(['todo.getAll'])
   const client = trpc.useContext()
 
-  const { mutate, isLoading } = trpc.useMutation('todo.createTodo', {
-    onSuccess: (data) => {
-      console.log('success data: ', data)
+  const check = trpc.useMutation('todo.updateCheck')
+  const create = trpc.useMutation('todo.createTodo', {
+    onSuccess: () => {
+      // console.log('success data: ', data)
       client.invalidateQueries(['todo.getAll'])
       if (!inputRef.current) return
       inputRef.current.value = ''
@@ -19,9 +20,21 @@ const Home: NextPage = () => {
 
   function handleAdd(e: { target: HTMLInputElement; key: string }) {
     if (e.key === 'Enter') {
-      console.log('add : ', e.target.value)
-      mutate({ text: e.target.value })
+      // console.log('add : ', e.target.value)
+      create.mutate({ text: e.target.value })
     }
+  }
+
+  function handleCheck(e: { target: HTMLInputElement }) {
+    console.log('checked  : ', typeof e.target.checked)
+    check.mutate(
+      { id: e.target.id, checked: e.target.checked },
+      {
+        onSuccess: () => {
+          client.invalidateQueries(['todo.getAll'])
+        },
+      }
+    )
   }
 
   return (
@@ -45,7 +58,13 @@ const Home: NextPage = () => {
                   key={todo.id}
                   className="  text-xl text-teal-500 hover:text-teal-700 duration-300"
                 >
-                  <input type="checkbox" name="my" id={todo.id} />
+                  <input
+                    type="checkbox"
+                    name="my"
+                    id={todo.id}
+                    onChange={handleCheck}
+                    checked={todo.checked}
+                  />
 
                   <label htmlFor={todo.id}> {todo.text}</label>
                 </div>
@@ -60,7 +79,7 @@ const Home: NextPage = () => {
             placeholder="Add todo"
             className="p-2 border-2 rounded"
             onKeyDown={handleAdd}
-            disabled={isLoading}
+            disabled={create.isLoading}
           />
         </div>
       </main>

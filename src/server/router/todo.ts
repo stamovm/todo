@@ -23,3 +23,12 @@ export const todoRouter = createRouter()
       })
     },
   })
+  .mutation('updateCheck', {
+    input: z.object({ id: z.string().min(8), checked: z.boolean() }),
+    async resolve(req) {
+      return await req.ctx.prisma.todo.update({
+        data: { checked: req.input.checked },
+        where: { id: req.input.id },
+      })
+    },
+  })
