@@ -2,20 +2,12 @@ import { createRouter } from './context'
 import { z } from 'zod'
 
 export const todoRouter = createRouter()
-  .query('hello', {
-    input: z.object({ text: z.string().nullish() }).nullish(),
-    resolve({ input }) {
-      return {
-        greeting: `Hello ${input?.text ?? 'world'}`,
-      }
-    },
-  })
   .query('getAll', {
     async resolve({ ctx }) {
       return await ctx.prisma.todo.findMany()
     },
   })
-  .mutation('createTodo', {
+  .mutation('create', {
     input: z.object({ text: z.string().min(3) }),
     async resolve(req) {
       return await req.ctx.prisma.todo.create({
@@ -23,11 +15,19 @@ export const todoRouter = createRouter()
       })
     },
   })
-  .mutation('updateCheck', {
+  .mutation('updateChecked', {
     input: z.object({ id: z.string().min(8), checked: z.boolean() }),
     async resolve(req) {
       return await req.ctx.prisma.todo.update({
         data: { checked: req.input.checked },
+        where: { id: req.input.id },
+      })
+    },
+  })
+  .mutation('delete', {
+    input: z.object({ id: z.string().min(8) }),
+    async resolve(req) {
+      return await req.ctx.prisma.todo.delete({
         where: { id: req.input.id },
       })
     },

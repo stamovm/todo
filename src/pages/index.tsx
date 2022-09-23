@@ -8,33 +8,26 @@ const Home: NextPage = () => {
   const { data } = trpc.useQuery(['todo.getAll'])
   const client = trpc.useContext()
 
-  const check = trpc.useMutation('todo.updateCheck')
-  const create = trpc.useMutation('todo.createTodo', {
+  const create = trpc.useMutation('todo.create', {
     onSuccess: () => {
-      // console.log('success data: ', data)
       client.invalidateQueries(['todo.getAll'])
       if (!inputRef.current) return
       inputRef.current.value = ''
     },
   })
-
-  function handleAdd(e: { target: HTMLInputElement; key: string }) {
-    if (e.key === 'Enter') {
-      // console.log('add : ', e.target.value)
-      create.mutate({ text: e.target.value })
-    }
-  }
+  const check = trpc.useMutation('todo.updateChecked', {
+    onSuccess: () => {
+      client.invalidateQueries(['todo.getAll'])
+    },
+  })
+  const del = trpc.useMutation('todo.delete', {
+    onSuccess: () => {
+      client.invalidateQueries(['todo.getAll'])
+    },
+  })
 
   function handleCheck(e: { target: HTMLInputElement }) {
-    console.log('checked  : ', typeof e.target.checked)
-    check.mutate(
-      { id: e.target.id, checked: e.target.checked },
-      {
-        onSuccess: () => {
-          client.invalidateQueries(['todo.getAll'])
-        },
-      }
-    )
+    check.mutate({ id: e.target.id, checked: e.target.checked })
   }
 
   return (
@@ -56,7 +49,7 @@ const Home: NextPage = () => {
               data.map((todo) => (
                 <div
                   key={todo.id}
-                  className="  text-xl text-teal-500 hover:text-teal-700 duration-300"
+                  className="text-xl pb-2 text-teal-500 hover:text-teal-700 duration-300"
                 >
                   <input
                     type="checkbox"
@@ -65,8 +58,16 @@ const Home: NextPage = () => {
                     onChange={handleCheck}
                     checked={todo.checked}
                   />
-
                   <label htmlFor={todo.id}> {todo.text}</label>
+                  <button
+                    className="bg-gray-200 hover:bg-gray-400  text-red-900 font-bold mx-2 px-2 rounded inline-flex items-center duration-300"
+                    data-id={todo.id}
+                    onClick={(e) => {
+                      del.mutate({ id: e.currentTarget.dataset.id || '' })
+                    }}
+                  >
+                    X
+                  </button>
                 </div>
               ))
             ) : (
@@ -78,8 +79,12 @@ const Home: NextPage = () => {
             type="text"
             placeholder="Add todo"
             className="p-2 border-2 rounded"
-            onKeyDown={handleAdd}
             disabled={create.isLoading}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                create.mutate({ text: e.currentTarget.value })
+              }
+            }}
           />
         </div>
       </main>
