@@ -43,14 +43,15 @@ const Home: NextPage = () => {
       </Head>
       <main className="container flex flex-col items-center  min-h-screen p-4 mx-auto">
         <button
-          className="px-4 py-2 border border-black text-xl rounded-md bg-violet-50 hover:bg-violet-100 shadow-lg'"
+          className="px-4 py-2 btn mx-4"
           onClick={session ? () => signOut() : () => signIn()}
         >
           {session ? 'Sign out' : 'Sign in'}
         </button>
+
         {session && (
           <>
-            <p className="text-2xl text-blue-500">
+            <p className="text-2xl text-teal-500">
               Logged in as {session?.user?.name}
             </p>
             <h1 className="pb-10 text-3xl  leading-normal font-bold text-teal-700">
@@ -104,7 +105,7 @@ const Home: NextPage = () => {
           </>
         )}
         {session && secretMessage && (
-          <p className="text-2xl text-blue-500">This: {secretMessage}</p>
+          <p className="text-2xl text-teal-500">This: {secretMessage}</p>
         )}
       </main>
     </>
