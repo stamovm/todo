@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .btn {
-  @apply px-4 py-2 text-xl font-medium  text-teal-700 border border-teal-700 rounded-md shadow-lg hover:bg-teal-600 hover:text-white active:bg-teal-500 focus:outline-none focus:ring transition duration-300 ease-in;
+  @apply rounded-md border border-teal-700 px-4  py-2 text-xl font-medium text-teal-700 shadow-lg transition duration-300 ease-in hover:bg-teal-600 hover:text-white focus:outline-none focus:ring active:bg-teal-500;
 }

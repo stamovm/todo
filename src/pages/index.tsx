@@ -67,7 +67,7 @@ const Home: NextPage = () => {
                     >
                       <div>
                         <input
-                          className=" h-4 w-4 rounded-md border border-teal-300 bg-teal-500  checked:bg-teal-600 hover:cursor-pointer"
+                          className="h-4  w-4 rounded-md border accent-teal-500  hover:cursor-pointer"
                           type="checkbox"
                           name="my"
                           id={todo.id}
@@ -83,7 +83,7 @@ const Home: NextPage = () => {
                         </label>
                       </div>
                       <button
-                        className="ml-2 inline-flex items-center rounded-md bg-gray-200 px-2 text-sm font-bold text-red-900 duration-300 hover:bg-gray-400"
+                        className="ml-2 inline-flex items-center rounded-md border border-teal-500 bg-teal-50 px-2 text-sm font-bold text-red-900 duration-300 hover:bg-teal-500 hover:text-red-700"
                         data-id={todo.id}
                         onClick={(e) => {
                           del.mutate({ id: e.currentTarget.dataset.id || "" });
