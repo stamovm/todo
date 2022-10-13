@@ -5,15 +5,15 @@ import { trpc } from "../utils/trpc";
 import { useRef } from "react";
 
 const Home: NextPage = () => {
-  const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery();
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data } = trpc.todo.getAll.useQuery();
-  const client = trpc.useContext();
+  // const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery();
+  const { data: myTodos } = trpc.todo.getTodos.useQuery();
   const { data: session } = useSession();
+  const client = trpc.useContext();
 
   const create = trpc.todo.create.useMutation({
     onSuccess: () => {
-      client.todo.getAll.invalidate();
+      client.todo.getTodos.invalidate();
       if (!inputRef.current) return;
       inputRef.current.value = "";
     },
@@ -21,12 +21,12 @@ const Home: NextPage = () => {
 
   const check = trpc.todo.updateChecked.useMutation({
     onSuccess: () => {
-      client.todo.getAll.invalidate();
+      client.todo.getTodos.invalidate();
     },
   });
   const del = trpc.todo.delete.useMutation({
     onSuccess: () => {
-      client.todo.getAll.invalidate();
+      client.todo.getTodos.invalidate();
     },
   });
 
@@ -38,7 +38,7 @@ const Home: NextPage = () => {
     return (
       <main className="container mx-auto flex min-h-screen flex-col items-center p-4">
         <button className="btn mx-4 px-4 py-2" onClick={() => signIn()}>
-          Sign in to begin
+          Log in
         </button>
       </main>
     );
@@ -59,15 +59,15 @@ const Home: NextPage = () => {
         </button>
 
         <p className="text-2xl text-teal-500">
-          Logged in as {session?.user?.name}
+          Logged in as {`${session?.user?.name} ${session?.user?.email}`}
         </p>
         <h1 className="mt-10 mb-4 text-3xl font-bold leading-normal text-teal-700">
           Todo List
         </h1>
         <div className="rounded-md border border-teal-500 p-3">
           <div className="mb-2 text-xl">
-            {data ? (
-              data.map((todo) => (
+            {myTodos ? (
+              myTodos.map((todo) => (
                 <div
                   key={todo.id}
                   className="mb-1 flex  items-center  justify-between text-xl text-teal-500 duration-300 ease-in hover:text-teal-700 "
@@ -114,12 +114,6 @@ const Home: NextPage = () => {
             }}
           />
         </div>
-
-        {secretMessage && (
-          <p className="mt-5 text-2xl text-teal-500">
-            Secret message: {secretMessage}
-          </p>
-        )}
       </main>
     </>
   );

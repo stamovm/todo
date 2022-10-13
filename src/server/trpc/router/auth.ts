@@ -5,6 +5,6 @@ export const authRouter = t.router({
     return ctx.session;
   }),
   getSecretMessage: authedProcedure.query(() => {
-    return "You are logged in and can see this secret message!";
+    return "This is the secret message!";
   }),
 });
