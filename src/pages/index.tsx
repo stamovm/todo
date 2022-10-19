@@ -1,13 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useRef } from "react";
 
 const Home: NextPage = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data: session } = useSession();
   const client = trpc.useContext();
+  const { data: session } = useSession();
   const { data: myTodos } = trpc.todo.getTodos.useQuery();
 
   const create = trpc.todo.create.useMutation({
@@ -33,30 +33,9 @@ const Home: NextPage = () => {
     check.mutate({ id: e.target.id, checked: e.target.checked });
   }
 
-  if (!session)
-    return (
-      <main className="container mx-auto flex min-h-screen flex-col items-center p-4">
-        <button className="btn mx-4 px-4 py-2" onClick={() => signIn()}>
-          Log in
-        </button>
-      </main>
-    );
-
+  if (!session) return <h2>Please sign in</h2>;
   return (
     <>
-      <button
-        className="btn mx-4 px-4 py-2"
-        onClick={session ? () => signOut() : () => signIn()}
-      >
-        {session ? "Sign out" : "Sign in"}
-      </button>
-
-      <p className="text-2xl text-teal-500">
-        Logged in as {`${session?.user?.name} ${session?.user?.email}`}
-      </p>
-      <h1 className="mt-10 mb-4 text-3xl font-bold leading-normal text-teal-700">
-        Todo List
-      </h1>
       <div className="rounded-md border border-teal-500 p-3">
         <div className="mb-2 text-xl">
           {myTodos ? (

@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 type Props = {
   children?: React.ReactNode;
 };
 
 const Layout = ({ children }: Props): React.ReactElement => {
+  const { data: session } = useSession();
+
   useEffect(() => {
     const keyDownHandler = (e: { key: string }) => {
       // if (e.key === 'Escape') toggleSidebar()
@@ -26,30 +29,36 @@ const Layout = ({ children }: Props): React.ReactElement => {
         <meta name="description" content="Todo list" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <header>
-        <nav className="flex h-12 items-center justify-between px-4 shadow-md">
-          <Link href="/">
-            <a className="pl-14 text-lg font-bold">Todo List</a>
-          </Link>
-          <div>
-            <Link href="/settings">
+      <div className="flex min-h-screen flex-col">
+        <header>
+          <nav className="flex h-10 items-center justify-between px-4 text-teal-700 shadow-md">
+            <Link href="/">
+              <a className=" text-lg font-bold">Todo List</a>
+            </Link>
+            <div>
+              {/* <Link href="/settings">
               <a className="p-2">Settings</a>
-            </Link>
-            <Link href="/login">
-              <a className="p-2">Login</a>
-            </Link>
-          </div>
-        </nav>
-      </header>
+            </Link> */}
+              <span> {session?.user?.name} </span>
+              <a
+                className="ml-2 cursor-pointer font-semibold transition delay-300 duration-300 ease-in hover:text-teal-900 "
+                onClick={session ? () => signOut() : () => signIn()}
+              >
+                {" "}
+                {session ? "Sign out" : "Sign in"}
+              </a>
+            </div>
+          </nav>
+        </header>
 
-      <main className="container mx-auto flex min-h-screen flex-col items-center p-4">
-        {children}
-      </main>
+        <main className="container mx-auto flex  flex-col items-center p-4">
+          {children}
+        </main>
 
-      <footer className="flex h-10 items-center justify-center shadow-inner">
-        Todo List
-      </footer>
+        <footer className="mt-auto flex h-10 items-center justify-center shadow-inner">
+          Todo List
+        </footer>
+      </div>
     </>
   );
 };
