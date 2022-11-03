@@ -1,20 +1,23 @@
-import { t, authedProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
-export const todoRouter = t.router({
-  getTodos: authedProcedure.query(({ ctx }) => {
+export const todoRouter = router({
+  getSession: publicProcedure.query(({ ctx }) => {
+    return ctx.session;
+  }),
+  getTodos: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.todo.findMany({
       where: { userId: ctx.session.user.id },
     });
   }),
-  create: authedProcedure
+  create: protectedProcedure
     .input(z.object({ text: z.string().min(3) }))
     .mutation(({ input, ctx }) => {
       return ctx.prisma.todo.create({
         data: { text: input.text, checked: false, userId: ctx.session.user.id },
       });
     }),
-  updateChecked: authedProcedure
+  updateChecked: protectedProcedure
     .input(z.object({ id: z.string().min(8), checked: z.boolean() }))
     .mutation(({ input, ctx }) => {
       return ctx.prisma.todo.update({
@@ -22,7 +25,7 @@ export const todoRouter = t.router({
         where: { id: input.id },
       });
     }),
-  delete: authedProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string().min(8) }))
     .mutation(({ input, ctx }) => {
       return ctx.prisma.todo.delete({

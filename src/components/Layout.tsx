@@ -32,8 +32,8 @@ const Layout = ({ children }: Props): React.ReactElement => {
       <div className="flex min-h-screen flex-col">
         <header>
           <nav className="flex h-10 items-center justify-between px-4 text-teal-700 shadow-md">
-            <Link href="/">
-              <a className=" text-lg font-bold">Todo List</a>
+            <Link className=" text-lg font-bold" href="/">
+              Todo List
             </Link>
             <div>
               {/* <Link href="/settings">

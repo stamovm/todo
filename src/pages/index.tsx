@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useRef } from "react";
@@ -42,11 +41,11 @@ const Home: NextPage = () => {
             myTodos.map((todo) => (
               <div
                 key={todo.id}
-                className="mb-1 flex  items-center  justify-between text-xl text-teal-500 duration-300 ease-in hover:text-teal-700 "
+                className="mb-1 flex  items-center  justify-between text-xl text-teal-600 duration-300 ease-in hover:text-teal-700 "
               >
                 <div>
                   <input
-                    className="h-4  w-4 rounded-md border accent-teal-500  hover:cursor-pointer"
+                    className="h-4  w-4 rounded-md border accent-teal-600  hover:cursor-pointer"
                     type="checkbox"
                     name="my"
                     id={todo.id}
@@ -59,7 +58,7 @@ const Home: NextPage = () => {
                   </label>
                 </div>
                 <button
-                  className="ml-2 inline-flex items-center rounded-md border border-teal-500 bg-teal-50 px-2 text-sm font-bold text-red-900 duration-300 hover:bg-teal-500 hover:text-red-700"
+                  className="ml-2 inline-flex items-center rounded-md border border-teal-500 bg-teal-50 px-2 text-sm font-bold text-red-900 duration-300 hover:bg-teal-700 hover:text-red-300"
                   data-id={todo.id}
                   onClick={(e) => {
                     del.mutate({ id: e.currentTarget.dataset.id || "" });
