@@ -32,16 +32,24 @@ const Layout = ({ children }: Props): React.ReactElement => {
       <div className="flex min-h-screen flex-col">
         <header>
           <nav className="flex h-10 items-center justify-between px-4 text-teal-700 shadow-md">
-            <Link className=" text-lg font-bold" href="/">
-              Todo List
-            </Link>
+            <div>
+              <Link className=" text-lg font-bold" href="/">
+                Todo List
+              </Link>
+              <Link
+                className="ml-4 cursor-pointer font-semibold transition delay-300 duration-150 ease-in hover:text-teal-900"
+                href="/notes"
+              >
+                Notes
+              </Link>
+            </div>
             <div>
               {/* <Link href="/settings">
               <a className="p-2">Settings</a>
             </Link> */}
               <span> {session?.user?.name} </span>
               <a
-                className="ml-2 cursor-pointer font-semibold transition delay-300 duration-300 ease-in hover:text-teal-900 "
+                className="ml-2 cursor-pointer font-semibold transition delay-150 duration-300 ease-in hover:text-teal-900 "
                 onClick={session ? () => signOut() : () => signIn()}
               >
                 {" "}
